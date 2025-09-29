@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class = "success"> Profile saved successfully! </h2>
+
+<div>
+    <h3>Your profile information:</h3>
+    <p><strong>Name:</strong> {{ name }}</p>
+    <p><strong>Total Guests:</strong> {{ quan }}</p>
+    <p><strong>Comments or Issues:</strong> {{ comments if comments else "Not provided" }}</p>
+    <p><strong>Relationship to me:</strong> {{ rel }}</p>
+    <p><strong>Accommodations Required:</strong> {{ "Yes" if accommodations else "No" }}</p>
+</div>
+
+<a href="{{ url_for('profile') }}"> Create another profile</a>
+
+
+{% endblock %}
