@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="{{url_for('static', filename = 'style.css')}}">
 </head>
 <body>
-    <!-- new stuff before block! -->
+    <!-- new stuff before block! Includes links using AHREF and HR which adds a sectional break! -->
     <nav>
         <a href="{{ url_for('profile') }}">Profile Form</a> |
-        <a href="{{ url_for('feedback') }}">Feedback From</a>
+        <a href="{{ url_for('feedback') }}">Feedback Form</a>
     </nav>
     <hr>
     {% block content %} {% endblock %}
