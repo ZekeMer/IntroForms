@@ -28,3 +28,20 @@ def profile():
         return render_template('profileSuccess.html', name = name, email = email, quan = quan, comments = comments, rel = rel, accommodations = accommodations)
 
     return render_template('profileForm.html')
+
+#new route
+
+@app.route('/feedback', methods=['GET', 'POST'])
+def feedback():
+    if request.method == 'POST':
+        rating = request.form.get('rating', '').strip()
+        feedback = request.form.get('feedback', '').strip()
+    
+        if not rating:
+            error = "Please provide a rating"
+            return render_template('feedbackForm.html', error = error)
+    
+        return render_template('feedbackSuccess.html', rating = rating, feedback = feedback)
+
+    return render_template('feedbackForm.html')
+
