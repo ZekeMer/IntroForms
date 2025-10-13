@@ -103,3 +103,26 @@ def admin_profiles():
 def admin_feedback():
     feedbacks = Feedback.query.all()
     return render_template('admin_feedback.html', feedbacks=feedbacks)
+
+#Intro SQL via Flask and adding a filter. Rating for all feedback = 1.
+
+@app.route('/admin/feedback/rating_1')
+def admin_feedback_rating_1():
+    feedbacks = Feedback.query.filter_by(rating=1).all()
+    return render_template('admin_feedback.html', feedbacks=feedbacks)
+
+
+#Less than or = to 3, feedback isn't blank or a string of space.
+
+@app.route('/admin/feedback/bad_review')
+def admin_feedback_bad_review():
+    feedbacks = Feedback.query.filter(Feedback.rating <= 3, Feedback.comment.isnot(None), Feedback.comment != "").all()
+    return render_template('admin_feedback.html', feedbacks=feedbacks)
+
+#Filtering by sibling amount. The relationship variable "rel" needs to be set to sibling & the amount of siblings should be greater than 5.
+
+@app.route('/admin/profiles/siblings')
+def admin_profiles_siblings():
+    profiles = Profile.query.filter(Profile.rel == "sibling", Profile.quan > 5).all()
+    return render_template('admin_profiles.html', profiles = profiles)
+
