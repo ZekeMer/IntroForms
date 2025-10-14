@@ -65,6 +65,26 @@ def profile():
 
     return render_template('profileForm.html')
 
+@app.route('/admin/profiles/AppendComments')
+def admin_profiles_appendComments():
+    try:
+        profiles_to_update = Profile.query.filter_by(accommodations=True).all()
+
+        for profile in profiles_to_update:
+            if "email accommodations form" not in profile.comments:
+                profile.comments += " - email accommodations form"
+        
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+
+    except Exception as e:
+        db.session.rollback()
+        #Raw error shown to users as well. This is not secure.
+        errorMsg = f"Error updating profiles: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles = profiles, error = errorMsg)
+
 #new route
 
 @app.route('/feedback', methods=['GET', 'POST'])
@@ -103,6 +123,7 @@ def admin_profiles():
 def admin_feedback():
     feedbacks = Feedback.query.all()
     return render_template('admin_feedback.html', feedbacks=feedbacks)
+
 
 #Intro SQL via Flask and adding a filter. Rating for all feedback = 1.
 

@@ -2,6 +2,9 @@
 {% block title %} {{super()}} - Profiles Admin {% endblock %}
 {% block content %}
 <h1>All Profiles</h1>
+
+<a href = "{{ url_for('admin_profiles_appendComments') }}"> Append to Comments </a>
+
 <table class="table table-striped" border = "1">
     <tr>
         <th>ID</th>
