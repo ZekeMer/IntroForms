@@ -85,6 +85,29 @@ def admin_profiles_appendComments():
         profiles = Profile.query.all()
         return render_template('admin_profiles.html', profiles = profiles, error = errorMsg)
 
+@app.route('/admin/profiles/delete_first')
+def admin_profiles_deleteFirst():
+    try:
+        all_profiles = Profile.query.order_by(Profile.id).all()
+
+        if len(all_profiles) < 1:
+            error = "You have no profiles to delete"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles = profiles, error = error)
+
+        #index 0 is always the first index
+        first_profile = all_profiles[0]
+
+        db.session.delete(first_profile)
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+
+    except Exception as e:
+        error = f"Error deleting profile: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles = profiles, error = error)       
+
 #new route
 
 @app.route('/feedback', methods=['GET', 'POST'])
