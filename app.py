@@ -107,8 +107,77 @@ def admin_profiles_deleteFirst():
         error = f"Error deleting profile: {str(e)}"
         profiles = Profile.query.all()
         return render_template('admin_profiles.html', profiles = profiles, error = error)       
+    
+# DELETE COWORKERS
+@app.route('/admin/profiles/deleteCoworker')
+def admin_profiles_deleteCoworker():
+    try:
+        deleted_count = Profile.query.filter_by(rel="coworker etc.").delete()
 
-#new route
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+    
+    except Exception as e:
+        db.session.rollback()
+        error = f"Error deleting coworker profiles: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles=profiles, error=error)
+
+# DELETE MORE THAN 5 GUESTS
+@app.route('/admin/profiles/deleteAudaciousGuest')
+def admin_profiles_delete_audacious_guests():
+    try:
+        deleted_count = Profile.query.filter(Profile.quan > 5).delete()
+
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+    
+    except Exception as e:
+        error = f"Error deleting audacious profiles: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles = profiles, error = error)
+
+# DELETE MORE THAN GIVEN QUANTITY
+@app.route('/admin/profiles/deleteQuantity', methods = ['POST'])
+def admin_profiles_deleteByQuantity():
+    try:
+        quantity_str = request.form.get('quantity', '').strip()
+
+        if not quantity_str:
+            error = "Please enter a quantity"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.hrml', profiles = profiles, error = error)
+        
+        try:
+            quantity = int(quantity_str)
+        except ValueError:
+            error = "please enter a valid number"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles = profiles, error =  error)
+        
+        profiles_to_delete = Profile.query.filter(Profile.quan >= quantity).all()
+
+        if not profiles_to_delete:
+            error = f"no profiles found with {quantity} or more guests."
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles = profiles, error = error)
+        
+        for profile in profiles_to_delete:
+            db.session.delete(profile)
+
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+
+    except Exception as e:
+        db.session.rollback()
+        error = f"Error deleting profiles: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles = profiles, error = error)
+    
+# Feedbacks
 
 @app.route('/feedback', methods=['GET', 'POST'])
 def feedback():

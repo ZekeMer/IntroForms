@@ -3,9 +3,23 @@
 {% block content %}
 <h1>All Profiles</h1>
 
-<a href = "{{ url_for('admin_profiles_appendComments') }}"> Append to Comments </a>
+<a href = "{{url_for('admin_profiles_appendComments') }}"> Append to Comments </a>
 <br>
-<a href = "{{ url_for('admin_profiles_deleteFirst') }}"> Remove the first entry </a>
+<a href = "{{url_for('admin_profiles_deleteFirst') }}"> Remove the first entry </a>
+<br>
+<a href = "{{url_for('admin_profiles_deleteCoworker') }}"> Remove coworker profiles </a>
+<br>
+<a href = "{{url_for('admin_profiles_delete_audacious_guests') }}"> Remove audacious guest </a>
+<br>
+<div>
+    <form method = "POST" action = "{{ url_for('admin_profiles_deleteByQuantity') }}">
+        <label for = "quantity"> Delete profiles with guests >= </label>
+        <input type = "number" id=" quantity" name="quantity" min = "1">
+        {# this is a button #}
+        <button type = "submit"> Delete </button>
+    </form>
+</div>
+<br>
 
 <table class="table table-striped" border = "1">
     <tr>
