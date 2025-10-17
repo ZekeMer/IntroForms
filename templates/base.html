@@ -10,7 +10,9 @@
     <!-- new stuff before block! Includes links using AHREF and HR which adds a sectional break! -->
     <nav>
         <a href="{{ url_for('profile') }}">Profile Form</a> |
-        <a href="{{ url_for('feedback') }}">Feedback Form</a>
+        <a href="{{ url_for('feedback') }}">Feedback Form</a> | 
+        <a href="{{ url_for('admin_profiles') }}">See All Profiles</a> |
+        <a href="{{url_for('admin_feedback')}}">See All Feedback</a>
     </nav>
     <hr>
     {% block content %} {% endblock %}

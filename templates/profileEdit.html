@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2> Edit Profile </h2>
+
+{% if error %}
+    <p class = "error"> {{error}} </p>
+{% endif %}
+
+<form action="{{ url_for('admin_profiles_edit') }}" method="POST">
+    <input type="hidden" name = "profileId" id = "profileId" value = " {{ profile.id }}"/>
+    <div>
+        <label for = "name"> Name *: </label>
+        <input type="text" name="name" id="name" value = "{{profile.name}}" required >
+    </div>
+
+    <div>
+        <label for="email"> Email *: </label>
+        <input type="email" name="email" id="email" value = "{{profile.email}}" required>
+    </div>
+
+    <div>
+        <label for="quan"> Total Quantity *: </label>
+        <input type="number" name="quan" id="quan" min = "1" max = "10" value = "{{profile.quan}}" required>
+    </div>
+    {# ERROR: comments will not save.  #}
+    <div> 
+        <label for = "comments"> Comments or Issues: </label>
+        <textarea name="comments" id="comments" rows = "4" value = "{{profile.comments}}" ></textarea>
+    </div>
+
+    <div>
+        <label for="rel"> Relationship to me *:</label>
+        <select name="rel" id="rel" required>
+            <option value=""> What is guest's relationship to me </option>
+            <option value="parent"> Parent / Parent-in-Law </option>
+            <option value="sibling"> Sibling / Sibling-in-Law </option>
+            <option value="other family">Other family member</option>
+            <option value="coworker etc.">Coworker or business</option>
+            <option value="friend">Friend</option>
+            <option value="other">Other</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="accommodations"> Accommodations Required?</label>
+        <input type="checkbox" id = "accommodations" name = "accommodations" value="yes">
+    </div>
+
+    <div>
+        <button type = "submit"> Save Profile </button>
+    </div>
+
+</form>
+
+{# Javascript #}
+<script>
+    function setRelationSelected(selectElement, value) {
+        for (var i = 0; i < selectElement.options.length; i++) {
+            if (selectElement.options[i].value == value) {
+                selectElement.options[i].selected = true;
+                return;
+            }
+        }
+    }
+    setRelationSelected(document.getElementById("rel"), "{{profile.rel}}");
+</script>
+
+<script>
+    function setAccommodationsCheckbox(checkboxElement, value) {
+        console.log("value = " + value);
+        if (value == "True") {
+            checkboxElement.checked = "checked";
+        }
+    }
+    
+    setAccommodationsCheckbox(document.getElementById("accommodations"), "{{profile.accommodations}}");
+</script>
+
+{% endblock %}

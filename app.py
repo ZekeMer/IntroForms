@@ -216,6 +216,88 @@ def admin_feedback():
     feedbacks = Feedback.query.all()
     return render_template('admin_feedback.html', feedbacks=feedbacks)
 
+# Delete via button
+@app.route('/admin/profiles/deleteButton', methods = ['POST'])
+def admin_profilesDeleteButton():
+    try:
+        profileId = request.form.get('profileId', '').strip()
+
+        #Catching no input
+        if not profileId:
+            error = f"no profile id included for deletion"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles=profiles, error=error)
+        
+        profile_to_delete = Profile.query.filter_by(id = profileId).first()
+
+        if not profile_to_delete:
+            error = f"no profile found for id to delete"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles=profiles, error=error)
+        
+        db.session.delete(profile_to_delete)
+
+        db.session.commit()
+
+        return redirect(url_for('admin_profiles'))
+
+    except Exception as e:
+        db.session.rollback()
+        error = f"error deleting profile: {str(e)}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles=profiles, error=error)      
+
+@app.route('/admin/profiles/edit', methods = ['GET', 'POST'])
+def admin_profiles_edit():
+    if request.method == 'POST':
+
+        profileId = request.form.get("profileId", '', type=int)
+
+        if not profileId:
+            error = f"no profile id provided"
+            profiles = Profile.query.all()
+            return redirect(url_for('admin_profiles_edit')+f'?profileId={profileId}', error=error)
+        
+        profileToUpdate = Profile.query.filter_by(id = profileId).first()
+
+        if not profileToUpdate:
+            error = f"no profile id found with id = {profileId}"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles=profiles, error=error)
+        
+        try:
+            profileToUpdate.name = request.form.get('name', profileToUpdate.name)
+            profileToUpdate.email = request.form.get('email', profileToUpdate.email)
+            profileToUpdate.quan = request.form.get('quan', profileToUpdate.quan)
+            profileToUpdate.rel = request.form.get('rel', profileToUpdate.rel)
+            profileToUpdate.accommodations = request.form.get('accommodations', False) == 'yes'
+            profileToUpdate.comments = request.form.get('comments', profileToUpdate.comments)
+
+            db.session.commit()
+
+            return redirect(url_for('admin_profiles'))
+        
+        except Exception as e:
+            db.session.rollback()
+            error = f"error writing changes to db = {str(e)}"
+            profiles = Profile.query.all()
+            return render_template('admin_profiles.html', profiles = profiles, error = error)
+
+    profileId = request.args.get('profileId')
+
+    if not profileId:
+        error = f"no profile id provided"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles=profiles, error=error)
+    
+    profileToEdit = Profile.query.filter_by(id = profileId).first()
+
+    if not profileToEdit:
+        error = f"no profile found with id equal to = {profileId}"
+        profiles = Profile.query.all()
+        return render_template('admin_profiles.html', profiles=profiles, error=error)
+    
+    return render_template('profileEdit.html', profile=profileToEdit)
 
 #Intro SQL via Flask and adding a filter. Rating for all feedback = 1.
 
